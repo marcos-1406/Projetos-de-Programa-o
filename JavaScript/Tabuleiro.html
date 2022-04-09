@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Tabuleiro</title>
+    </head>
+
+    <body>
+        <canvas id="stage" width="1350" height="800"></canvas>
+        <script type="text/javascript">
+
+            window.onload = function(){
+                var stage = document.getElementById('stage');
+                var ctx = stage.getContext("2d");
+
+                const lp = 10;
+                const qp = (stage.width/lp)*(stage.height/lp);
+                const linhas = stage.height/lp;
+                const colunas = stage.width/lp;
+                const tabuleiro = new Array(linhas);
+                const tabuleiro_novo = new Array(linhas);
+
+                for(let i = 0; i < linhas; i++){
+                    tabuleiro_novo[i] = new Array(colunas);
+                    tabuleiro[i] = new Array(colunas);
+                }
+
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, stage.width, stage.height);
+
+                function Main(){
+
+                    Limpa_tela();
+                    Glider(10, 10);
+                    Glider(10, 40);
+                    Quadrado_9x9(100, 10);
+                    
+
+                    setInterval(desenha, 100);
+                }
+
+                function Limpa_tela(){
+                    for(let i = 0; i < linhas; i++){
+                        for(let j = 0; j < colunas; j++){
+                            tabuleiro[i][j] = 0;
+                            tabuleiro_novo[i][j] = 0;
+                        }   
+                    }
+                }
+
+                function gerar(){
+                    for(let i = 0; i < linhas; i++){
+                        for(let j = 0; j < colunas; j++){
+                            tabuleiro_novo[i][j] = 0;
+                            if(6*i == 8*j) tabuleiro[i][j] = 1;
+                            else if(11*i == 2*j) tabuleiro[i][j] = 1;
+                            else if(3*i == 8*j) tabuleiro[i][j] = 1;
+                            else if(2*i == 5*j) tabuleiro[i][j] = 1;
+                            else if(10*i == 2*j) tabuleiro[i][j] = 1;
+                            else if(3*i == 8*j) tabuleiro[i][j] = 1;
+                            else if(2*i == 5*j) tabuleiro[i][j] = 1;
+
+                            else if(3*i == 2*j) tabuleiro[i][j] = 1;
+                            else if(2*i == 5*j) tabuleiro[i][j] = 1;
+                            else if(5*i == 3*j) tabuleiro[i][j] = 1;
+                            else if(4*i == 2*j) tabuleiro[i][j] = 1;
+                            else if(i == 2*j) tabuleiro[i][j] = 1;
+                            else if(2*i == 6*j) tabuleiro[i][j] = 1;
+
+                            else if(2+j == i - 3) tabuleiro[i][j] = 1;
+                            else if(j+4 == i + 3) tabuleiro[i][j] = 1;
+                            else tabuleiro[i][j] = 0;
+                        }   
+                    }
+                }
+
+                function Glider(x, y){
+                    tabuleiro[y][x] = 1;
+                    tabuleiro[y][1 + x] = 1;
+                    tabuleiro[y][2 + x] = 1;
+                    tabuleiro[1 + y][x] = 1;
+                    tabuleiro[2 + y][1 + x] = 1;
+                }
+
+                function Quadrado_9x9(x, y){
+                   for(let i = 0; i < 3; i++){
+                       for(let j = 0; j < 3; j++){
+                           tabuleiro[y + i][x + j] = 1;
+                       }
+                   }
+                }
+
+                function desenha(){
+
+                    for(let i = 0; i < linhas; i++){
+                        for(let j = 0; j < colunas; j++){
+                            if(tabuleiro[i][j] == 1){
+                                ctx.fillStyle = "gray";
+                                ctx.fillRect(j*lp, i*lp, lp - 1, lp - 1);
+                            }
+                            else if(tabuleiro[i][j] == 0){
+                                ctx.fillStyle = "black";
+                                ctx.fillRect(j*lp, i*lp, lp - 1, lp - 1);
+                            }
+                            else if(tabuleiro[i][j] == 2){
+                                ctx.fillStyle = "blue";
+                                ctx.fillRect(j*lp, i*lp, lp - 1, lp - 1);
+                            }
+                        }
+                    }
+
+                    atualiza();
+                }
+
+                function atualiza(){
+                    for(let i = 0; i < linhas; i++){
+                        for(let j = 0; j < colunas; j++){
+                            if(i > 0 && i < (linhas - 1) && j > 0 && j < (colunas -1)){
+                                vizinhosVivos = 0;
+                                if(tabuleiro[i-1][j-1] == 1) vizinhosVivos++;
+                                if(tabuleiro[i-1][j] == 1) vizinhosVivos++;
+                                if(tabuleiro[i-1][j+1] == 1) vizinhosVivos++;
+                                if(tabuleiro[i][j-1] == 1) vizinhosVivos++;
+                                if(tabuleiro[i][j+1] == 1) vizinhosVivos++;
+                                if(tabuleiro[i+1][j-1] == 1) vizinhosVivos++;
+                                if(tabuleiro[i+1][j] == 1) vizinhosVivos++;
+                                if(tabuleiro[i+1][j+1] == 1) vizinhosVivos++;
+
+
+                                //CONFIGURAÇÃO DAS REGRAS DO JOGO DA VIDA 
+                                //-----------*****************-------------------
+                                if(tabuleiro[i][j] == 1 && vizinhosVivos < 2) tabuleiro_novo[i][j] = 0;
+                                else if(tabuleiro[i][j] == 1 && vizinhosVivos == 9) tabuleiro_novo[i][j] = 0;
+                                else if(tabuleiro[i][j] == 1 && vizinhosVivos > 3) tabuleiro_novo[i][j] = 0;
+                                else if(tabuleiro[i][j] == 1 && vizinhosVivos == 2) tabuleiro_novo[i][j] = 1;
+                                else if(tabuleiro[i][j] == 1 && vizinhosVivos == 3) tabuleiro_novo[i][j] = 1;
+                                else if(tabuleiro[i][j] == 0 && vizinhosVivos == 3) tabuleiro_novo[i][j] = 1;
+                                //-----------*****************-------------------
+
+                            }
+                        }
+                    }
+
+                    iguala_tabuleiros()
+                }
+
+                function iguala_tabuleiros(){
+                    for(let i = 0; i < linhas; i++){
+                        for(let j = 0; j < colunas; j++){
+                            tabuleiro[i][j] = tabuleiro_novo[i][j];
+                        }
+                    }
+                }
+
+                Main();
+            }
+
+        </script>
+    </body>
+</html>
