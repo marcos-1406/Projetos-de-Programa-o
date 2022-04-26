@@ -30,7 +30,8 @@ bool FaixaDePedestre = false;
 
 
 void setup(){
-    pinMode(sensor0, INPUT); //DECLARANDO CADA PINO COMO ENTRADA E SAÍDA
+    /* **** DECLARAÇÃO DE CADA PINO COMO ENTRADA E SAÍDA **** */
+    pinMode(sensor0, INPUT); 
     pinMode(sensor1, INPUT);
     pinMode(sensor2, INPUT);
     pinMode(sensor3, INPUT);
@@ -123,6 +124,32 @@ void loop(){
         }
     }
 
+    //********** CURVA DE 90° PARA A DIREITA *************
+    else if(sensor[0] == 1 && sensor[1] == 1 && sensor[2] == 1 && sensor[3] == 0 && sensor[4] == 1 && sensor[5] == 1 && sensor[6] == 0){
+        delay(1000)
+        
+        digitalWrite(IN1, HIGH);
+        digitalWrite(IN2, LOW);
+        analogWrite(PWM_A, Speed_A*0.5);
+        digitalWrite(IN3, HIGH);
+        digitalWrite(IN4, LOW);
+        analogWrite(PWM_B, Speed_B*0);
+        
+    }
+
+    //********** CURVA DE 90° PARA A ESQUERDA *************
+    else if(sensor[0] == 0 && sensor[1] == 1 && sensor[2] == 1 && sensor[3] == 0 && sensor[4] == 1 && sensor[5] == 1 && sensor[6] == 1){
+        delay(1000);
+        
+        digitalWrite(IN1, HIGH);
+        digitalWrite(IN2, LOW);
+        analogWrite(PWM_A, Speed_A*0);
+        digitalWrite(IN3, HIGH);
+        digitalWrite(IN4, LOW);
+        analogWrite(PWM_B, Speed_B*0.9);
+        
+    }
+
     //********** CURVA ACENTUADA PARA A DIREITA *************
     else if(sensor[0] == 1 && sensor[1] == 1 && sensor[2] == 1 && sensor[3] == 1 && sensor[4] == 0 && sensor[5] == 1 && sensor[6] == 1){
         digitalWrite(IN1, HIGH);
@@ -157,7 +184,7 @@ void loop(){
     }
 
     //********** DUAS CURVAS DE 90º POSSÍVEIS **********
-    else if(sensor[0] == 1 && sensor[1] == 1 && sensor[2] == 0 && sensor[3] == 0 && sensor[4] == 0 && sensor[5] == 1 && sensor[6] == 1){
+    else if(sensor[0] == 0 && sensor[1] == 1 && sensor[2] == 1 && sensor[3] == 0 && sensor[4] == 1 && sensor[5] == 1 && sensor[6] == 0){
         
         //Decidir qual lado o carrinho vai, pois isso será indicado para os capitães em uma reunião
         digitalWrite(IN1, LOW);
