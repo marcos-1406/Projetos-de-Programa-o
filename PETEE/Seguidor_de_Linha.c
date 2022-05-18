@@ -11,24 +11,6 @@ int sensor[7]; //VETOR PARA ARMAZENAR INFORMAÇÃO DA PLACA
 
 /* **** ---------------------------------------------------------- **** */
 
-/* **** -CONFIGURAÇÃO PARA A PONTE H- **** */
-
-int IN1 = 22; //PINOS PARA CONTROLAR O SENTIDO DOS DOIS MOTORES
-int IN2 = 24;
-int IN3 = 26;
-int IN4 = 28;
-
-int PWM_A = 2; //PINOS PARA CONTROLE DA VELOCIDADE
-int PWM_B = 3;
-
-int Speed_A = 255; //VELOCIDADES MÁXIMO DOS MOTORES 
-int Speed_B = 255;
-
-/* **** ---------------------------------------------------------- **** */
-
-bool FaixaDePedestre = false;
-
-
 void setup(){
     /* **** DECLARAÇÃO DE CADA PINO COMO ENTRADA E SAÍDA **** */
     pinMode(sensor0, INPUT); 
@@ -175,12 +157,18 @@ void loop(){
     //********** FAIXA DE PEDESTRE **********
     else if(sensor[0] == 0 && sensor[1] == 0 && sensor[2] == 0 && sensor[3] == 1 && sensor[4] == 0 && sensor[5] == 0 && sensor[6] == 0){
         digitalWrite(IN1, HIGH);
-        digitalWrite(IN2, LOW);
+        digitalWrite(IN2, HIGH);
         analogWrite(PWM_A, Speed_A*0.9);
         digitalWrite(IN3, HIGH);
-        digitalWrite(IN4, LOW);
+        digitalWrite(IN4, HIGH);
         analogWrite(PWM_B, Speed_B*0.9);
-        FaixaDePedestre = true;
+        delay(5000);
+        digitalWrite(IN1, HIGH);
+        digitalWrite(IN2, LOW);
+        analogWrite(PWM_A, Speed_A*0.7);
+        digitalWrite(IN3, HIGH);
+        digitalWrite(IN4, low);
+        analogWrite(PWM_B, Speed_B*0.7);
     }
 
     //********** DUAS CURVAS DE 90º POSSÍVEIS **********
